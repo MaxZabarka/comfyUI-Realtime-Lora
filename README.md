@@ -29,6 +29,8 @@ If this node saves you time or helps your workflow, consider [buying me a coffee
 
 ## Requirements
 
+**Python version:** Both AI-Toolkit and sd-scripts work best with Python 3.10-3.12. Python 3.10 is the safest bet. Avoid 3.13 for now.
+
 You need to install the training backend(s) separately:
 
 **For SDXL training:**
