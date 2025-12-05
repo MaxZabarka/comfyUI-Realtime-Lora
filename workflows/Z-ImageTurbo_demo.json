@@ -20,9 +20,19 @@
       "mode": 0,
       "inputs": [
         {
+          "localized_name": "images",
           "name": "images",
           "type": "IMAGE",
           "link": 148
+        },
+        {
+          "localized_name": "filename_prefix",
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
         }
       ],
       "outputs": [],
@@ -54,9 +64,29 @@
       "flags": {},
       "order": 0,
       "mode": 0,
-      "inputs": [],
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "COMBO",
+          "widget": {
+            "name": "image"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "choose file to upload",
+          "name": "upload",
+          "type": "IMAGEUPLOAD",
+          "widget": {
+            "name": "upload"
+          },
+          "link": null
+        }
+      ],
       "outputs": [
         {
+          "localized_name": "IMAGE",
           "name": "IMAGE",
           "type": "IMAGE",
           "links": [
@@ -64,6 +94,7 @@
           ]
         },
         {
+          "localized_name": "MASK",
           "name": "MASK",
           "type": "MASK",
           "links": null
@@ -98,9 +129,29 @@
       "flags": {},
       "order": 1,
       "mode": 0,
-      "inputs": [],
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "COMBO",
+          "widget": {
+            "name": "image"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "choose file to upload",
+          "name": "upload",
+          "type": "IMAGEUPLOAD",
+          "widget": {
+            "name": "upload"
+          },
+          "link": null
+        }
+      ],
       "outputs": [
         {
+          "localized_name": "IMAGE",
           "name": "IMAGE",
           "type": "IMAGE",
           "links": [
@@ -108,6 +159,7 @@
           ]
         },
         {
+          "localized_name": "MASK",
           "name": "MASK",
           "type": "MASK",
           "links": null
@@ -142,9 +194,29 @@
       "flags": {},
       "order": 2,
       "mode": 0,
-      "inputs": [],
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "COMBO",
+          "widget": {
+            "name": "image"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "choose file to upload",
+          "name": "upload",
+          "type": "IMAGEUPLOAD",
+          "widget": {
+            "name": "upload"
+          },
+          "link": null
+        }
+      ],
       "outputs": [
         {
+          "localized_name": "IMAGE",
           "name": "IMAGE",
           "type": "IMAGE",
           "links": [
@@ -152,6 +224,7 @@
           ]
         },
         {
+          "localized_name": "MASK",
           "name": "MASK",
           "type": "MASK",
           "links": null
@@ -186,9 +259,29 @@
       "flags": {},
       "order": 3,
       "mode": 0,
-      "inputs": [],
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "COMBO",
+          "widget": {
+            "name": "image"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "choose file to upload",
+          "name": "upload",
+          "type": "IMAGEUPLOAD",
+          "widget": {
+            "name": "upload"
+          },
+          "link": null
+        }
+      ],
       "outputs": [
         {
+          "localized_name": "IMAGE",
           "name": "IMAGE",
           "type": "IMAGE",
           "links": [
@@ -196,6 +289,7 @@
           ]
         },
         {
+          "localized_name": "MASK",
           "name": "MASK",
           "type": "MASK",
           "links": null
@@ -230,9 +324,20 @@
       "flags": {},
       "order": 4,
       "mode": 0,
-      "inputs": [],
+      "inputs": [
+        {
+          "localized_name": "String",
+          "name": "String",
+          "type": "STRING",
+          "widget": {
+            "name": "String"
+          },
+          "link": null
+        }
+      ],
       "outputs": [
         {
+          "localized_name": "STRING",
           "name": "STRING",
           "type": "STRING",
           "links": [
@@ -268,9 +373,20 @@
       "flags": {},
       "order": 5,
       "mode": 0,
-      "inputs": [],
+      "inputs": [
+        {
+          "localized_name": "String",
+          "name": "String",
+          "type": "STRING",
+          "widget": {
+            "name": "String"
+          },
+          "link": null
+        }
+      ],
       "outputs": [
         {
+          "localized_name": "STRING",
           "name": "STRING",
           "type": "STRING",
           "links": [
@@ -306,9 +422,20 @@
       "flags": {},
       "order": 6,
       "mode": 0,
-      "inputs": [],
+      "inputs": [
+        {
+          "localized_name": "String",
+          "name": "String",
+          "type": "STRING",
+          "widget": {
+            "name": "String"
+          },
+          "link": null
+        }
+      ],
       "outputs": [
         {
+          "localized_name": "STRING",
           "name": "STRING",
           "type": "STRING",
           "links": [
@@ -344,9 +471,20 @@
       "flags": {},
       "order": 7,
       "mode": 0,
-      "inputs": [],
+      "inputs": [
+        {
+          "localized_name": "String",
+          "name": "String",
+          "type": "STRING",
+          "widget": {
+            "name": "String"
+          },
+          "link": null
+        }
+      ],
       "outputs": [
         {
+          "localized_name": "STRING",
           "name": "STRING",
           "type": "STRING",
           "links": [
@@ -384,9 +522,20 @@
       },
       "order": 8,
       "mode": 0,
-      "inputs": [],
+      "inputs": [
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "STRING",
+          "widget": {
+            "name": "value"
+          },
+          "link": null
+        }
+      ],
       "outputs": [
         {
+          "localized_name": "STRING",
           "name": "STRING",
           "type": "STRING",
           "links": null
@@ -410,104 +559,6 @@
       "bgcolor": "#353"
     },
     {
-      "id": 80,
-      "type": "RealtimeLoraTrainer",
-      "pos": [
-        -1034.6606275351087,
-        277.8110443780382
-      ],
-      "size": [
-        400,
-        492
-      ],
-      "flags": {},
-      "order": 13,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "image_1",
-          "shape": 7,
-          "type": "IMAGE",
-          "link": 152
-        },
-        {
-          "name": "caption_1",
-          "shape": 7,
-          "type": "STRING",
-          "link": 156
-        },
-        {
-          "name": "image_2",
-          "shape": 7,
-          "type": "IMAGE",
-          "link": 153
-        },
-        {
-          "name": "caption_2",
-          "shape": 7,
-          "type": "STRING",
-          "link": 157
-        },
-        {
-          "name": "image_3",
-          "shape": 7,
-          "type": "IMAGE",
-          "link": 154
-        },
-        {
-          "name": "caption_3",
-          "shape": 7,
-          "type": "STRING",
-          "link": 158
-        },
-        {
-          "name": "image_4",
-          "shape": 7,
-          "type": "IMAGE",
-          "link": 155
-        },
-        {
-          "name": "caption_4",
-          "shape": 7,
-          "type": "STRING",
-          "link": 159
-        }
-      ],
-      "outputs": [
-        {
-          "name": "lora_path",
-          "type": "STRING",
-          "links": [
-            160
-          ]
-        }
-      ],
-      "properties": {
-        "aux_id": "shootthesound/comfyUI-Realtime-Lora",
-        "ver": "7c5d8e9358c7be1a4995a56fede6d8c3fd534616",
-        "ue_properties": {
-          "widget_ue_connectable": {},
-          "input_ue_unconnectable": {}
-        }
-      },
-      "widgets_values": [
-        4,
-        null,
-        "",
-        "Z-Image Turbo",
-        "C:\\Ai-toolkit",
-        "",
-        500,
-        0.0005,
-        16,
-        "Low (768px)",
-        true,
-        "MyLora"
-      ],
-      "ndSuperSelectorEnabled": false,
-      "ndPowerEnabled": false
-    },
-    {
       "id": 68,
       "type": "KSampler",
       "pos": [
@@ -523,28 +574,87 @@
       "mode": 0,
       "inputs": [
         {
+          "localized_name": "model",
           "name": "model",
           "type": "MODEL",
           "link": 137
         },
         {
+          "localized_name": "positive",
           "name": "positive",
           "type": "CONDITIONING",
           "link": 138
         },
         {
+          "localized_name": "negative",
           "name": "negative",
           "type": "CONDITIONING",
           "link": 139
         },
         {
+          "localized_name": "latent_image",
           "name": "latent_image",
           "type": "LATENT",
           "link": 140
+        },
+        {
+          "localized_name": "seed",
+          "name": "seed",
+          "type": "INT",
+          "widget": {
+            "name": "seed"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "steps",
+          "name": "steps",
+          "type": "INT",
+          "widget": {
+            "name": "steps"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "cfg",
+          "name": "cfg",
+          "type": "FLOAT",
+          "widget": {
+            "name": "cfg"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "sampler_name",
+          "name": "sampler_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "sampler_name"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "scheduler",
+          "name": "scheduler",
+          "type": "COMBO",
+          "widget": {
+            "name": "scheduler"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "denoise",
+          "name": "denoise",
+          "type": "FLOAT",
+          "widget": {
+            "name": "denoise"
+          },
+          "link": null
         }
       ],
       "outputs": [
         {
+          "localized_name": "LATENT",
           "name": "LATENT",
           "type": "LATENT",
           "slot_index": 0,
@@ -564,7 +674,7 @@
         "Node name for S&R": "KSampler"
       },
       "widgets_values": [
-        119542394004822,
+        908220870130551,
         "randomize",
         9,
         1,
@@ -589,11 +699,13 @@
       "mode": 0,
       "inputs": [
         {
+          "localized_name": "samples",
           "name": "samples",
           "type": "LATENT",
           "link": 146
         },
         {
+          "localized_name": "vae",
           "name": "vae",
           "type": "VAE",
           "link": 147
@@ -601,6 +713,7 @@
       ],
       "outputs": [
         {
+          "localized_name": "IMAGE",
           "name": "IMAGE",
           "type": "IMAGE",
           "slot_index": 0,
@@ -636,13 +749,24 @@
       "mode": 0,
       "inputs": [
         {
+          "localized_name": "clip",
           "name": "clip",
           "type": "CLIP",
           "link": 144
+        },
+        {
+          "localized_name": "text",
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": null
         }
       ],
       "outputs": [
         {
+          "localized_name": "CONDITIONING",
           "name": "CONDITIONING",
           "type": "CONDITIONING",
           "slot_index": 0,
@@ -684,13 +808,24 @@
       "mode": 0,
       "inputs": [
         {
+          "localized_name": "clip",
           "name": "clip",
           "type": "CLIP",
           "link": 145
+        },
+        {
+          "localized_name": "text",
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": null
         }
       ],
       "outputs": [
         {
+          "localized_name": "CONDITIONING",
           "name": "CONDITIONING",
           "type": "CONDITIONING",
           "slot_index": 0,
@@ -732,18 +867,30 @@
       "mode": 0,
       "inputs": [
         {
+          "localized_name": "model",
           "name": "model",
           "type": "MODEL",
           "link": 143
         },
         {
+          "localized_name": "lora_path",
           "name": "lora_path",
           "type": "STRING",
           "link": 160
+        },
+        {
+          "localized_name": "strength",
+          "name": "strength",
+          "type": "FLOAT",
+          "widget": {
+            "name": "strength"
+          },
+          "link": null
         }
       ],
       "outputs": [
         {
+          "localized_name": "model",
           "name": "model",
           "type": "MODEL",
           "links": [
@@ -751,6 +898,7 @@
           ]
         },
         {
+          "localized_name": "lora_name",
           "name": "lora_name",
           "type": "STRING",
           "links": [
@@ -758,6 +906,7 @@
           ]
         },
         {
+          "localized_name": "lora_path",
           "name": "lora_path",
           "type": "STRING",
           "links": null
@@ -793,13 +942,24 @@
       "mode": 4,
       "inputs": [
         {
+          "localized_name": "model",
           "name": "model",
           "type": "MODEL",
           "link": 142
+        },
+        {
+          "localized_name": "shift",
+          "name": "shift",
+          "type": "FLOAT",
+          "widget": {
+            "name": "shift"
+          },
+          "link": null
         }
       ],
       "outputs": [
         {
+          "localized_name": "MODEL",
           "name": "MODEL",
           "type": "MODEL",
           "slot_index": 0,
@@ -836,9 +996,38 @@
       "flags": {},
       "order": 9,
       "mode": 0,
-      "inputs": [],
+      "inputs": [
+        {
+          "localized_name": "width",
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "height",
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "batch_size",
+          "name": "batch_size",
+          "type": "INT",
+          "widget": {
+            "name": "batch_size"
+          },
+          "link": null
+        }
+      ],
       "outputs": [
         {
+          "localized_name": "LATENT",
           "name": "LATENT",
           "type": "LATENT",
           "slot_index": 0,
@@ -877,9 +1066,39 @@
       "flags": {},
       "order": 10,
       "mode": 0,
-      "inputs": [],
+      "inputs": [
+        {
+          "localized_name": "clip_name",
+          "name": "clip_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "clip_name"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "type",
+          "name": "type",
+          "type": "COMBO",
+          "widget": {
+            "name": "type"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "device",
+          "name": "device",
+          "shape": 7,
+          "type": "COMBO",
+          "widget": {
+            "name": "device"
+          },
+          "link": null
+        }
+      ],
       "outputs": [
         {
+          "localized_name": "CLIP",
           "name": "CLIP",
           "type": "CLIP",
           "links": [
@@ -920,9 +1139,29 @@
       "flags": {},
       "order": 11,
       "mode": 0,
-      "inputs": [],
+      "inputs": [
+        {
+          "localized_name": "unet_name",
+          "name": "unet_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "unet_name"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "weight_dtype",
+          "name": "weight_dtype",
+          "type": "COMBO",
+          "widget": {
+            "name": "weight_dtype"
+          },
+          "link": null
+        }
+      ],
       "outputs": [
         {
+          "localized_name": "MODEL",
           "name": "MODEL",
           "type": "MODEL",
           "links": [
@@ -961,9 +1200,20 @@
       "flags": {},
       "order": 12,
       "mode": 0,
-      "inputs": [],
+      "inputs": [
+        {
+          "localized_name": "vae_name",
+          "name": "vae_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "vae_name"
+          },
+          "link": null
+        }
+      ],
       "outputs": [
         {
+          "localized_name": "VAE",
           "name": "VAE",
           "type": "VAE",
           "links": [
@@ -1003,6 +1253,7 @@
       "mode": 0,
       "inputs": [
         {
+          "localized_name": "text",
           "name": "text",
           "type": "STRING",
           "link": 149
@@ -1010,6 +1261,7 @@
       ],
       "outputs": [
         {
+          "localized_name": "STRING",
           "name": "STRING",
           "shape": 6,
           "type": "STRING",
@@ -1026,7 +1278,216 @@
           "version": "7.5.1"
         },
         "Node name for S&R": "ShowText|pysssss"
-      }
+      },
+      "widgets_values": [
+        "MyLora_20251205_170614"
+      ]
+    },
+    {
+      "id": 80,
+      "type": "RealtimeLoraTrainer",
+      "pos": [
+        -1034.6606275351087,
+        277.8110443780382
+      ],
+      "size": [
+        400,
+        492
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image_1",
+          "name": "image_1",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 152
+        },
+        {
+          "localized_name": "caption_1",
+          "name": "caption_1",
+          "shape": 7,
+          "type": "STRING",
+          "link": 156
+        },
+        {
+          "localized_name": "image_2",
+          "name": "image_2",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 153
+        },
+        {
+          "localized_name": "caption_2",
+          "name": "caption_2",
+          "shape": 7,
+          "type": "STRING",
+          "link": 157
+        },
+        {
+          "localized_name": "image_3",
+          "name": "image_3",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 154
+        },
+        {
+          "localized_name": "caption_3",
+          "name": "caption_3",
+          "shape": 7,
+          "type": "STRING",
+          "link": 158
+        },
+        {
+          "localized_name": "image_4",
+          "name": "image_4",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 155
+        },
+        {
+          "localized_name": "caption_4",
+          "name": "caption_4",
+          "shape": 7,
+          "type": "STRING",
+          "link": 159
+        },
+        {
+          "localized_name": "inputcount",
+          "name": "inputcount",
+          "type": "INT",
+          "widget": {
+            "name": "inputcount"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "images_path",
+          "name": "images_path",
+          "type": "STRING",
+          "widget": {
+            "name": "images_path"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "architecture",
+          "name": "architecture",
+          "type": "COMBO",
+          "widget": {
+            "name": "architecture"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "ai_toolkit_path",
+          "name": "ai_toolkit_path",
+          "type": "STRING",
+          "widget": {
+            "name": "ai_toolkit_path"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "caption",
+          "name": "caption",
+          "type": "STRING",
+          "widget": {
+            "name": "caption"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "training_steps",
+          "name": "training_steps",
+          "type": "INT",
+          "widget": {
+            "name": "training_steps"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "learning_rate",
+          "name": "learning_rate",
+          "type": "FLOAT",
+          "widget": {
+            "name": "learning_rate"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "lora_rank",
+          "name": "lora_rank",
+          "type": "INT",
+          "widget": {
+            "name": "lora_rank"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "vram_mode",
+          "name": "vram_mode",
+          "type": "COMBO",
+          "widget": {
+            "name": "vram_mode"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "keep_lora",
+          "name": "keep_lora",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "keep_lora"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "output_name",
+          "name": "output_name",
+          "type": "STRING",
+          "widget": {
+            "name": "output_name"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "lora_path",
+          "name": "lora_path",
+          "type": "STRING",
+          "links": [
+            160
+          ]
+        }
+      ],
+      "properties": {
+        "aux_id": "shootthesound/comfyUI-Realtime-Lora",
+        "ver": "7c5d8e9358c7be1a4995a56fede6d8c3fd534616",
+        "ue_properties": {
+          "widget_ue_connectable": {},
+          "input_ue_unconnectable": {}
+        }
+      },
+      "widgets_values": [
+        4,
+        null,
+        "",
+        "Z-Image Turbo",
+        "S:\\Auto\\Aitoolkit\\ai-toolkit",
+        "",
+        500,
+        0.0005,
+        16,
+        "Low (768px)",
+        true,
+        "MyLora"
+      ],
+      "ndSuperSelectorEnabled": false,
+      "ndPowerEnabled": false
     }
   ],
   "links": [
@@ -1203,10 +1664,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.8769226950000016,
+      "scale": 0.7247295000000012,
       "offset": [
-        1966.4321707571783,
-        524.4494562534167
+        1888.2901776050323,
+        597.0136330519056
       ]
     },
     "frontendVersion": "1.32.9",
