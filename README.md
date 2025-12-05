@@ -25,6 +25,8 @@ If this node saves you time or helps your workflow, consider [buying me a coffee
 
 **Note on Wan 2.2 modes:** Wan uses a two-stage noise model - High handles early denoising steps, Low handles later steps. You can train separate LoRAs for each, or use Combo mode which trains a single LoRA across all noise steps that works with both High and Low models.
 
+**Technical note:** When using High or Low mode, the example workflows still pass the LoRA to both models but at zero strength for the one you didn't train. This prevents ComfyUI from loading the base model into memory before training starts - a workaround to avoid unnecessary VRAM usage.
+
 ## Requirements
 
 You need to install the training backend(s) separately:
