@@ -468,142 +468,6 @@
       "widgets_values": []
     },
     {
-      "id": 57,
-      "type": "KSamplerAdvanced",
-      "pos": [
-        -449.6805675678602,
-        60.65777266830573
-      ],
-      "size": [
-        304.748046875,
-        334
-      ],
-      "flags": {},
-      "order": 24,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 125
-        },
-        {
-          "name": "positive",
-          "type": "CONDITIONING",
-          "link": 127
-        },
-        {
-          "name": "negative",
-          "type": "CONDITIONING",
-          "link": 129
-        },
-        {
-          "name": "latent_image",
-          "type": "LATENT",
-          "link": 131
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": [
-            113
-          ]
-        }
-      ],
-      "properties": {
-        "cnr_id": "comfy-core",
-        "ver": "0.3.75",
-        "Node name for S&R": "KSamplerAdvanced",
-        "ue_properties": {
-          "widget_ue_connectable": {},
-          "version": "7.5.1",
-          "input_ue_unconnectable": {}
-        }
-      },
-      "widgets_values": [
-        "enable",
-        519747813303369,
-        "randomize",
-        8,
-        1,
-        "euler",
-        "simple",
-        0,
-        4,
-        "enable"
-      ]
-    },
-    {
-      "id": 58,
-      "type": "KSamplerAdvanced",
-      "pos": [
-        -99.68696401115709,
-        52.04422091054004
-      ],
-      "size": [
-        304.748046875,
-        334
-      ],
-      "flags": {},
-      "order": 25,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 123
-        },
-        {
-          "name": "positive",
-          "type": "CONDITIONING",
-          "link": 128
-        },
-        {
-          "name": "negative",
-          "type": "CONDITIONING",
-          "link": 130
-        },
-        {
-          "name": "latent_image",
-          "type": "LATENT",
-          "link": 113
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": [
-            124
-          ]
-        }
-      ],
-      "properties": {
-        "cnr_id": "comfy-core",
-        "ver": "0.3.75",
-        "Node name for S&R": "KSamplerAdvanced",
-        "ue_properties": {
-          "widget_ue_connectable": {},
-          "version": "7.5.1",
-          "input_ue_unconnectable": {}
-        }
-      },
-      "widgets_values": [
-        "disable",
-        778143423061334,
-        "randomize",
-        8,
-        1,
-        "euler",
-        "simple",
-        4,
-        10000,
-        "disable"
-      ]
-    },
-    {
       "id": 37,
       "type": "UNETLoader",
       "pos": [
@@ -646,55 +510,6 @@
       "bgcolor": "#335",
       "ndSuperSelectorEnabled": false,
       "ndPowerEnabled": false
-    },
-    {
-      "id": 6,
-      "type": "CLIPTextEncode",
-      "pos": [
-        -1081.4893798306803,
-        -174.86567471035616
-      ],
-      "size": [
-        422.84503173828125,
-        164.31304931640625
-      ],
-      "flags": {},
-      "order": 15,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "clip",
-          "type": "CLIP",
-          "link": 74
-        }
-      ],
-      "outputs": [
-        {
-          "name": "CONDITIONING",
-          "type": "CONDITIONING",
-          "slot_index": 0,
-          "links": [
-            127,
-            128
-          ]
-        }
-      ],
-      "title": "CLIP Text Encode (Positive Prompt)",
-      "properties": {
-        "cnr_id": "comfy-core",
-        "ver": "0.3.75",
-        "Node name for S&R": "CLIPTextEncode",
-        "ue_properties": {
-          "widget_ue_connectable": {},
-          "version": "7.5.1",
-          "input_ue_unconnectable": {}
-        }
-      },
-      "widgets_values": [
-        "zwxem style painging of a city with amazing towers at night"
-      ],
-      "color": "#232",
-      "bgcolor": "#353"
     },
     {
       "id": 7,
@@ -744,47 +559,6 @@
       ],
       "color": "#322",
       "bgcolor": "#533"
-    },
-    {
-      "id": 61,
-      "type": "EmptyHunyuanLatentVideo",
-      "pos": [
-        -1539.9192989401295,
-        960.4870876850268
-      ],
-      "size": [
-        270.0943298339844,
-        130
-      ],
-      "flags": {},
-      "order": 11,
-      "mode": 0,
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": [
-            131
-          ]
-        }
-      ],
-      "properties": {
-        "cnr_id": "comfy-core",
-        "ver": "0.3.75",
-        "Node name for S&R": "EmptyHunyuanLatentVideo",
-        "ue_properties": {
-          "widget_ue_connectable": {},
-          "version": "7.5.1",
-          "input_ue_unconnectable": {}
-        }
-      },
-      "widgets_values": [
-        768,
-        768,
-        41,
-        1
-      ]
     },
     {
       "id": 54,
@@ -902,13 +676,13 @@
           "hidden": false,
           "paused": false,
           "params": {
-            "filename": "mp4_00004.mp4",
+            "filename": "mp4_00013.mp4",
             "subfolder": "",
             "type": "output",
             "format": "video/h264-mp4",
             "frame_rate": 8,
-            "workflow": "mp4_00004.png",
-            "fullpath": "S:\\Auto\\ComfyUI_windows_portable\\ComfyUI\\output\\mp4_00004.mp4"
+            "workflow": "mp4_00013.png",
+            "fullpath": "S:\\Auto\\ComfyUI_windows_portable\\ComfyUI\\output\\mp4_00013.mp4"
           }
         }
       }
@@ -925,7 +699,7 @@
         106
       ],
       "flags": {},
-      "order": 12,
+      "order": 11,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -1005,161 +779,6 @@
       ]
     },
     {
-      "id": 90,
-      "type": "LoraLoaderModelOnly",
-      "pos": [
-        -800.508028542224,
-        298.9394956403991
-      ],
-      "size": [
-        306.2839073496459,
-        82
-      ],
-      "flags": {},
-      "order": 19,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 178
-        }
-      ],
-      "outputs": [
-        {
-          "name": "MODEL",
-          "type": "MODEL",
-          "links": [
-            179
-          ]
-        }
-      ],
-      "properties": {
-        "cnr_id": "comfy-core",
-        "ver": "0.3.75",
-        "Node name for S&R": "LoraLoaderModelOnly",
-        "ue_properties": {
-          "widget_ue_connectable": {},
-          "input_ue_unconnectable": {},
-          "version": "7.5.1"
-        }
-      },
-      "widgets_values": [
-        "wan\\Wan2.2-Lightning_T2V-v1.1-A14B-4steps-lora_HIGH_fp16.safetensors",
-        1
-      ],
-      "ndSuperSelectorEnabled": false,
-      "ndPowerEnabled": false
-    },
-    {
-      "id": 89,
-      "type": "LoraLoaderModelOnly",
-      "pos": [
-        -795.1411978708973,
-        424.5615620991239
-      ],
-      "size": [
-        305.2472242825131,
-        82
-      ],
-      "flags": {},
-      "order": 21,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 176
-        }
-      ],
-      "outputs": [
-        {
-          "name": "MODEL",
-          "type": "MODEL",
-          "links": [
-            177
-          ]
-        }
-      ],
-      "properties": {
-        "cnr_id": "comfy-core",
-        "ver": "0.3.75",
-        "Node name for S&R": "LoraLoaderModelOnly",
-        "ue_properties": {
-          "widget_ue_connectable": {},
-          "input_ue_unconnectable": {},
-          "version": "7.5.1"
-        }
-      },
-      "widgets_values": [
-        "wan\\Wan2.2-Lightning_T2V-v1.1-A14B-4steps-lora_LOW_fp16.safetensors",
-        1
-      ],
-      "ndSuperSelectorEnabled": false,
-      "ndPowerEnabled": false
-    },
-    {
-      "id": 75,
-      "type": "ApplyTrainedLora",
-      "pos": [
-        -1105.1628666919266,
-        271.2805184683584
-      ],
-      "size": [
-        270,
-        98
-      ],
-      "flags": {},
-      "order": 17,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 156
-        },
-        {
-          "name": "lora_path",
-          "type": "STRING",
-          "link": 168
-        }
-      ],
-      "outputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "links": [
-            178
-          ]
-        },
-        {
-          "name": "lora_name",
-          "type": "STRING",
-          "links": null
-        },
-        {
-          "name": "lora_path",
-          "type": "STRING",
-          "links": [
-            180
-          ]
-        }
-      ],
-      "properties": {
-        "aux_id": "shootthesound/comfyUI-Realtime-Lora",
-        "ver": "7c5d8e9358c7be1a4995a56fede6d8c3fd534616",
-        "Node name for S&R": "ApplyTrainedLora",
-        "ue_properties": {
-          "widget_ue_connectable": {},
-          "input_ue_unconnectable": {},
-          "version": "7.5.1"
-        }
-      },
-      "widgets_values": [
-        1
-      ]
-    },
-    {
       "id": 92,
       "type": "PrimitiveString",
       "pos": [
@@ -1173,7 +792,7 @@
       "flags": {
         "collapsed": false
       },
-      "order": 13,
+      "order": 12,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -1241,7 +860,327 @@
         }
       },
       "widgets_values": [
-        "S:\\Auto\\Aitoolkit\\ai-toolkit\\output\\My----Lora_20251205_191437\\My----Lora_20251205_191437_low_noise.safetensors"
+        "S:\\Auto\\Aitoolkit\\ai-toolkit\\output\\My----Lora_20251205_195807\\My----Lora_20251205_195807_low_noise.safetensors"
+      ]
+    },
+    {
+      "id": 6,
+      "type": "CLIPTextEncode",
+      "pos": [
+        -1081.4893798306803,
+        -174.86567471035616
+      ],
+      "size": [
+        422.84503173828125,
+        164.31304931640625
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 74
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "slot_index": 0,
+          "links": [
+            127,
+            128
+          ]
+        }
+      ],
+      "title": "CLIP Text Encode (Positive Prompt)",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.75",
+        "Node name for S&R": "CLIPTextEncode",
+        "ue_properties": {
+          "widget_ue_connectable": {},
+          "version": "7.5.1",
+          "input_ue_unconnectable": {}
+        }
+      },
+      "widgets_values": [
+        "zwxem style painting of a city with amazing towers at night"
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 89,
+      "type": "LoraLoaderModelOnly",
+      "pos": [
+        -795.1411978708973,
+        424.5615620991239
+      ],
+      "size": [
+        305.2472242825131,
+        82
+      ],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 176
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            177
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.75",
+        "Node name for S&R": "LoraLoaderModelOnly",
+        "ue_properties": {
+          "widget_ue_connectable": {},
+          "input_ue_unconnectable": {},
+          "version": "7.5.1"
+        }
+      },
+      "widgets_values": [
+        "wan\\Wan2.2-Lightning_T2V-v1.1-A14B-4steps-lora_LOW_fp16.safetensors",
+        1
+      ],
+      "ndSuperSelectorEnabled": false,
+      "ndPowerEnabled": false
+    },
+    {
+      "id": 90,
+      "type": "LoraLoaderModelOnly",
+      "pos": [
+        -800.508028542224,
+        298.9394956403991
+      ],
+      "size": [
+        306.2839073496459,
+        82
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 178
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            179
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.75",
+        "Node name for S&R": "LoraLoaderModelOnly",
+        "ue_properties": {
+          "widget_ue_connectable": {},
+          "input_ue_unconnectable": {},
+          "version": "7.5.1"
+        }
+      },
+      "widgets_values": [
+        "wan\\Wan2.2-Lightning_T2V-v1.1-A14B-4steps-lora_HIGH_fp16.safetensors",
+        1
+      ],
+      "ndSuperSelectorEnabled": false,
+      "ndPowerEnabled": false
+    },
+    {
+      "id": 57,
+      "type": "KSamplerAdvanced",
+      "pos": [
+        -449.6805675678602,
+        60.65777266830573
+      ],
+      "size": [
+        304.748046875,
+        334
+      ],
+      "flags": {},
+      "order": 24,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 125
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 127
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 129
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 131
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            113
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.75",
+        "Node name for S&R": "KSamplerAdvanced",
+        "ue_properties": {
+          "widget_ue_connectable": {},
+          "version": "7.5.1",
+          "input_ue_unconnectable": {}
+        }
+      },
+      "widgets_values": [
+        "enable",
+        641231278888305,
+        "randomize",
+        8,
+        1,
+        "euler",
+        "simple",
+        0,
+        4,
+        "enable"
+      ]
+    },
+    {
+      "id": 58,
+      "type": "KSamplerAdvanced",
+      "pos": [
+        -99.68696401115709,
+        52.04422091054004
+      ],
+      "size": [
+        304.748046875,
+        334
+      ],
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 123
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 128
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 130
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 113
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            124
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.75",
+        "Node name for S&R": "KSamplerAdvanced",
+        "ue_properties": {
+          "widget_ue_connectable": {},
+          "version": "7.5.1",
+          "input_ue_unconnectable": {}
+        }
+      },
+      "widgets_values": [
+        "disable",
+        1098921531174599,
+        "randomize",
+        8,
+        1,
+        "euler",
+        "simple",
+        4,
+        10000,
+        "disable"
+      ]
+    },
+    {
+      "id": 61,
+      "type": "EmptyHunyuanLatentVideo",
+      "pos": [
+        -1539.9192989401295,
+        960.4870876850268
+      ],
+      "size": [
+        270.0943298339844,
+        130
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            131
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.3.75",
+        "Node name for S&R": "EmptyHunyuanLatentVideo",
+        "ue_properties": {
+          "widget_ue_connectable": {},
+          "version": "7.5.1",
+          "input_ue_unconnectable": {}
+        }
+      },
+      "widgets_values": [
+        768,
+        768,
+        17,
+        1
       ]
     },
     {
@@ -1304,11 +1243,72 @@
       ]
     },
     {
+      "id": 75,
+      "type": "ApplyTrainedLora",
+      "pos": [
+        -1105.1628666919266,
+        271.2805184683584
+      ],
+      "size": [
+        270,
+        98
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 156
+        },
+        {
+          "name": "lora_path",
+          "type": "STRING",
+          "link": 168
+        }
+      ],
+      "outputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "links": [
+            178
+          ]
+        },
+        {
+          "name": "lora_name",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "lora_path",
+          "type": "STRING",
+          "links": [
+            180
+          ]
+        }
+      ],
+      "properties": {
+        "aux_id": "shootthesound/comfyUI-Realtime-Lora",
+        "ver": "7c5d8e9358c7be1a4995a56fede6d8c3fd534616",
+        "Node name for S&R": "ApplyTrainedLora",
+        "ue_properties": {
+          "widget_ue_connectable": {},
+          "input_ue_unconnectable": {},
+          "version": "7.5.1"
+        }
+      },
+      "widgets_values": [
+        1
+      ]
+    },
+    {
       "id": 77,
       "type": "RealtimeLoraTrainer",
       "pos": [
-        -1549.283174934012,
-        377.79255842286545
+        -1549.9578627706937,
+        426.20491818722064
       ],
       "size": [
         400,
@@ -1394,9 +1394,9 @@
         "S:\\Auto\\Aitoolkit\\ai-toolkit",
         "",
         500,
-        0.0006,
+        0.0003,
         16,
-        "Low (768px)",
+        "Min (512px)",
         true,
         "My----Lora"
       ],
@@ -1650,10 +1650,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.45,
+      "scale": 0.7972024500000029,
       "offset": [
-        5148.172063822903,
-        869.5407749104679
+        2775.809022103294,
+        412.79912035009613
       ]
     },
     "frontendVersion": "1.32.9",
