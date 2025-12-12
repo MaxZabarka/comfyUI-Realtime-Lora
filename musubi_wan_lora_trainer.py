@@ -16,6 +16,12 @@ from datetime import datetime
 import numpy as np
 from PIL import Image
 
+import boto3
+from botocore.exceptions import ClientError, NoCredentialsError
+import requests
+import zipfile
+import io
+
 import folder_paths
 
 from .musubi_wan_config_template import (
@@ -30,9 +36,10 @@ from .musubi_wan_config_template import (
 _musubi_wan_config = {}
 _musubi_wan_config_file = os.path.join(os.path.dirname(__file__), ".musubi_wan_config.json")
 
-# Global cache for trained LoRAs
-_musubi_wan_lora_cache = {}
-_musubi_wan_cache_file = os.path.join(os.path.dirname(__file__), ".musubi_wan_lora_cache.json")
+# S3 client globals
+_s3_client = None
+_s3_bucket_name = None
+_s3_initialized = False
 
 
 def _load_musubi_wan_config():
@@ -55,31 +62,248 @@ def _save_musubi_wan_config():
         pass
 
 
-def _load_musubi_wan_cache():
-    """Load Musubi Wan LoRA cache from disk."""
-    global _musubi_wan_lora_cache
-    if os.path.exists(_musubi_wan_cache_file):
-        try:
-            with open(_musubi_wan_cache_file, 'r', encoding='utf-8') as f:
-                _musubi_wan_lora_cache = json.load(f)
-        except:
-            _musubi_wan_lora_cache = {}
+def _initialize_s3():
+    """Initialize S3 client from .env file. Called once on first use."""
+    global _s3_client, _s3_bucket_name, _s3_initialized
 
+    if _s3_initialized:
+        return
 
-def _save_musubi_wan_cache():
-    """Save Musubi Wan LoRA cache to disk."""
+    # Validate required variables
+    access_key = os.environ.get('BUCKET_ACCESS_KEY_ID')
+    secret_key = os.environ.get('BUCKET_SECRET_ACCESS_KEY')
+    endpoint_url = os.environ.get('BUCKET_ENDPOINT_URL')
+    bucket_name = os.environ.get('BUCKET_NAME')
+
+    missing = []
+    if not access_key:
+        missing.append('BUCKET_ACCESS_KEY_ID')
+    if not secret_key:
+        missing.append('BUCKET_SECRET_ACCESS_KEY')
+    if not endpoint_url:
+        missing.append('BUCKET_ENDPOINT_URL')
+    if not bucket_name:
+        missing.append('BUCKET_NAME')
+
+    if missing:
+        raise ValueError(
+            f"Missing required S3 credentials in .env file: {', '.join(missing)}"
+        )
+
+    # Initialize boto3 S3 client
     try:
-        with open(_musubi_wan_cache_file, 'w', encoding='utf-8') as f:
-            json.dump(_musubi_wan_lora_cache, f)
-    except:
-        pass
+        _s3_client = boto3.client(
+            's3',
+            aws_access_key_id=access_key,
+            aws_secret_access_key=secret_key,
+            endpoint_url=endpoint_url,
+            region_name='us-east-005',  # Backblaze B2 region
+        )
+        _s3_bucket_name = bucket_name
+        _s3_initialized = True
+
+        # Test connection with a simple HEAD bucket request
+        _s3_client.head_bucket(Bucket=_s3_bucket_name)
+        print(f"[Musubi Wan S3] Connected to bucket: {_s3_bucket_name}")
+
+    except NoCredentialsError:
+        raise RuntimeError("Invalid S3 credentials. Check your .env file.")
+    except ClientError as e:
+        error_code = e.response.get('Error', {}).get('Code', 'Unknown')
+        if error_code == '404':
+            raise RuntimeError(f"S3 bucket '{bucket_name}' not found")
+        elif error_code == '403':
+            raise RuntimeError(f"Access denied to S3 bucket '{bucket_name}'")
+        else:
+            raise RuntimeError(f"S3 connection failed: {e}")
+    except Exception as e:
+        raise RuntimeError(f"Failed to initialize S3 client: {e}")
 
 
-def _compute_image_hash(images, captions, training_steps, learning_rate, lora_rank, vram_mode, output_name, noise_mode, use_folder_path=False):
+def _check_s3_cache(lora_hash):
+    """
+    Check if a LoRA exists in S3 cache.
+    Returns True if object exists, False otherwise.
+    """
+    _initialize_s3()
+
+    s3_key = f"loras/{lora_hash}.safetensors"
+
+    try:
+        _s3_client.head_object(Bucket=_s3_bucket_name, Key=s3_key)
+        print(f"[Musubi Wan S3] Cache hit for hash: {lora_hash}")
+        return True
+    except ClientError as e:
+        error_code = e.response.get('Error', {}).get('Code', 'Unknown')
+        if error_code == '404':
+            print(f"[Musubi Wan S3] Cache miss for hash: {lora_hash}")
+            return False
+        else:
+            # Unexpected error - fail fast
+            raise RuntimeError(f"S3 cache check failed: {e}")
+
+
+def _download_from_s3(lora_hash):
+    """
+    Download LoRA from S3 to a temporary file.
+    Returns the path to the temporary file.
+    Caller is responsible for cleanup.
+    """
+    _initialize_s3()
+
+    s3_key = f"loras/{lora_hash}.safetensors"
+
+    # Create temp file (will be cleaned up by caller)
+    temp_fd, temp_path = tempfile.mkstemp(suffix='.safetensors', prefix='musubi_wan_s3_')
+    os.close(temp_fd)  # Close file descriptor, we'll write with boto3
+
+    try:
+        print(f"[Musubi Wan S3] Downloading {s3_key} to {temp_path}")
+        _s3_client.download_file(_s3_bucket_name, s3_key, temp_path)
+        print(f"[Musubi Wan S3] Download complete")
+        return temp_path
+    except ClientError as e:
+        # Clean up temp file on error
+        if os.path.exists(temp_path):
+            os.unlink(temp_path)
+        raise RuntimeError(f"S3 download failed for {s3_key}: {e}")
+
+
+def _upload_to_s3(local_path, lora_hash):
+    """
+    Upload trained LoRA to S3.
+    Raises RuntimeError if upload fails (CRITICAL - must not silently fail).
+    """
+    _initialize_s3()
+
+    if not os.path.exists(local_path):
+        raise FileNotFoundError(f"Cannot upload - file not found: {local_path}")
+
+    s3_key = f"loras/{lora_hash}.safetensors"
+
+    try:
+        print(f"[Musubi Wan S3] Uploading {local_path} to {s3_key}")
+
+        # Upload with metadata
+        file_size_mb = os.path.getsize(local_path) / (1024 * 1024)
+        _s3_client.upload_file(
+            local_path,
+            _s3_bucket_name,
+            s3_key,
+            ExtraArgs={
+                'Metadata': {
+                    'hash': lora_hash,
+                    'trained_by': 'comfyui-musubi-wan',
+                    'file_size_mb': f'{file_size_mb:.2f}'
+                }
+            }
+        )
+
+        # Verify upload succeeded
+        _s3_client.head_object(Bucket=_s3_bucket_name, Key=s3_key)
+
+        print(f"[Musubi Wan S3] Upload complete: {s3_key} ({file_size_mb:.2f} MB)")
+
+        # Generate public URL for logging (if needed)
+        s3_url = f"{os.environ.get('BUCKET_ENDPOINT_URL').replace('s3.', '')}/{_s3_bucket_name}/{s3_key}"
+        print(f"[Musubi Wan S3] Object URL: {s3_url}")
+
+    except ClientError as e:
+        error_code = e.response.get('Error', {}).get('Code', 'Unknown')
+        raise RuntimeError(
+            f"CRITICAL: S3 upload failed for {s3_key}\n"
+            f"Error code: {error_code}\n"
+            f"Error message: {e}\n"
+            f"Training will abort to prevent data loss."
+        )
+    except Exception as e:
+        raise RuntimeError(f"CRITICAL: Unexpected S3 upload error: {e}")
+
+
+def _download_and_extract_zip(zip_url, extract_to, default_caption):
+    """
+    Download a zip file from a public URL and extract images to a directory.
+    Returns list of (image_path, caption) tuples.
+
+    Args:
+        zip_url: Public URL to zip file
+        extract_to: Directory to extract images to
+        default_caption: Default caption to use if no .txt file found
+
+    Returns:
+        Tuple of (image_paths, captions) - parallel lists
+    """
+    print(f"[Musubi Wan] Downloading zip from: {zip_url}")
+
+    try:
+        # Download zip file
+        response = requests.get(zip_url, timeout=300)  # 5 minute timeout
+        response.raise_for_status()
+
+        zip_size_mb = len(response.content) / (1024 * 1024)
+        print(f"[Musubi Wan] Downloaded {zip_size_mb:.2f} MB")
+
+    except requests.exceptions.Timeout:
+        raise RuntimeError(f"Zip download timed out after 5 minutes: {zip_url}")
+    except requests.exceptions.RequestException as e:
+        raise RuntimeError(f"Failed to download zip file: {e}")
+
+    # Extract zip
+    try:
+        zip_buffer = io.BytesIO(response.content)
+
+        with zipfile.ZipFile(zip_buffer, 'r') as zip_ref:
+            # Get all files
+            all_files = zip_ref.namelist()
+            print(f"[Musubi Wan] Zip contains {len(all_files)} files")
+
+            # Extract all (let OS handle duplicates)
+            zip_ref.extractall(extract_to)
+
+    except zipfile.BadZipFile:
+        raise RuntimeError(f"Invalid zip file from URL: {zip_url}")
+    except Exception as e:
+        raise RuntimeError(f"Failed to extract zip file: {e}")
+
+    # Scan for images and captions
+    image_extensions = ('.png', '.jpg', '.jpeg', '.webp', '.bmp')
+    image_paths = []
+    captions = []
+
+    for root, dirs, files in os.walk(extract_to):
+        for filename in sorted(files):
+            if filename.lower().endswith(image_extensions):
+                full_path = os.path.join(root, filename)
+                image_paths.append(full_path)
+
+                # Look for matching caption file
+                base_name = os.path.splitext(filename)[0]
+                caption_file = os.path.join(root, f"{base_name}.txt")
+                if os.path.exists(caption_file):
+                    with open(caption_file, 'r', encoding='utf-8') as f:
+                        captions.append(f.read().strip())
+                else:
+                    captions.append(default_caption)
+
+    if not image_paths:
+        raise ValueError(
+            f"No valid images found in zip file. "
+            f"Expected extensions: {', '.join(image_extensions)}"
+        )
+
+    print(f"[Musubi Wan] Found {len(image_paths)} images in zip")
+    return image_paths, captions
+
+
+def _compute_image_hash(images, captions, training_steps, learning_rate, lora_rank, vram_mode, output_name, noise_mode, use_folder_path=False, zip_url=None):
     """Compute a hash of all images, captions, and training parameters."""
     hasher = hashlib.sha256()
 
-    if use_folder_path:
+    # If zip URL provided, hash it instead of image data
+    if zip_url:
+        hasher.update(f"zip_url:{zip_url}".encode('utf-8'))
+        print(f"[Musubi Wan] Hashing zip URL: {zip_url}")
+    elif use_folder_path:
         # For folder paths, hash the file paths and modification times
         for img_path in images:
             hasher.update(img_path.encode('utf-8'))
@@ -97,7 +321,9 @@ def _compute_image_hash(images, captions, training_steps, learning_rate, lora_ra
     params_str = f"musubi_wan|{noise_mode}|{captions_str}|{training_steps}|{learning_rate}|{lora_rank}|{vram_mode}|{output_name}|{len(images)}"
     hasher.update(params_str.encode('utf-8'))
 
-    return hasher.hexdigest()[:16]
+    hash_value = hasher.hexdigest()[:16]
+    print(f"[Musubi Wan] Computed hash: {hash_value}")
+    return hash_value
 
 
 def _get_venv_python_path(musubi_path):
@@ -157,9 +383,8 @@ def _get_model_path(name, folder_type):
         return name
 
 
-# Load config and cache on module import
+# Load config on module import
 _load_musubi_wan_config()
-_load_musubi_wan_cache()
 
 
 class MusubiWanLoraTrainer:
@@ -220,6 +445,10 @@ class MusubiWanLoraTrainer:
                 "images_path": ("STRING", {
                     "default": "",
                     "tooltip": "Optional: Path to folder containing training images. If provided, images from this folder are used instead of image inputs. Caption .txt files with matching names are used if present."
+                }),
+                "zip_url": ("STRING", {
+                    "default": "",
+                    "tooltip": "Optional: Public URL to zip file containing training images. Takes precedence over images_path and image inputs. Caption .txt files with matching names are used if present."
                 }),
                 "musubi_path": ("STRING", {
                     "default": _musubi_wan_config.get('musubi_path', musubi_fallback),
@@ -298,6 +527,7 @@ class MusubiWanLoraTrainer:
         self,
         inputcount,
         images_path,
+        zip_url,
         musubi_path,
         noise_mode,
         dit_model,
@@ -314,8 +544,6 @@ class MusubiWanLoraTrainer:
         image_1=None,
         **kwargs
     ):
-        global _musubi_wan_lora_cache
-
         # Expand paths
         musubi_path = os.path.expanduser(musubi_path.strip())
 
@@ -332,12 +560,34 @@ class MusubiWanLoraTrainer:
         min_timestep = timestep_config["min_timestep"]
         max_timestep = timestep_config["max_timestep"]
 
-        # Check if using folder path for images
+        # Determine image source (priority: zip_url > images_path > inputs)
         use_folder_path = False
+        use_zip = False
         folder_images = []
         folder_captions = []
+        zip_extract_dir = None
 
-        if images_path and images_path.strip():
+        # Priority 1: Zip URL
+        if zip_url and zip_url.strip():
+            zip_url = zip_url.strip()
+            use_zip = True
+            print(f"[Musubi Wan] Using zip file from URL: {zip_url}")
+
+            # Create temp directory for extraction
+            zip_extract_dir = tempfile.mkdtemp(prefix="comfy_musubi_wan_zip_")
+
+            try:
+                folder_images, folder_captions = _download_and_extract_zip(zip_url, zip_extract_dir, caption)
+                use_folder_path = True  # Treat like folder input from here on
+
+            except Exception as e:
+                # Cleanup on error
+                if zip_extract_dir:
+                    shutil.rmtree(zip_extract_dir, ignore_errors=True)
+                raise RuntimeError(f"Failed to process zip file: {e}")
+
+        # Priority 2: Local folder path
+        elif images_path and images_path.strip():
             images_path = os.path.expanduser(images_path.strip())
             if os.path.isdir(images_path):
                 # Find all image files in the folder
@@ -364,6 +614,7 @@ class MusubiWanLoraTrainer:
             else:
                 print(f"[Musubi Wan] Invalid folder path: {images_path}, falling back to inputs")
 
+        # Priority 3: Tensor inputs (fallback)
         if not use_folder_path:
             # Collect all images and captions from inputs
             all_images = []
@@ -382,7 +633,7 @@ class MusubiWanLoraTrainer:
                     all_captions.append(cap if cap else caption)
 
             if not all_images:
-                raise ValueError("No images provided. Either set images_path to a folder containing images, or connect at least one image input.")
+                raise ValueError("No images provided. Either set zip_url to a public zip URL, set images_path to a folder containing images, or connect at least one image input.")
 
         num_images = len(folder_images) if use_folder_path else len(all_images)
         print(f"[Musubi Wan] Training with {num_images} image(s)")
@@ -430,40 +681,47 @@ class MusubiWanLoraTrainer:
         }
         _save_musubi_wan_config()
 
-        # Compute hash for caching
-        if use_folder_path:
-            image_hash = _compute_image_hash(folder_images, folder_captions, training_steps, learning_rate, lora_rank, vram_mode, output_name, noise_mode, use_folder_path=True)
+        # Compute hash for caching (include zip URL if used)
+        if use_zip:
+            image_hash = _compute_image_hash(
+                folder_images, folder_captions, training_steps, learning_rate,
+                lora_rank, vram_mode, output_name, noise_mode,
+                use_folder_path=True, zip_url=zip_url
+            )
+        elif use_folder_path:
+            image_hash = _compute_image_hash(
+                folder_images, folder_captions, training_steps, learning_rate,
+                lora_rank, vram_mode, output_name, noise_mode,
+                use_folder_path=True
+            )
         else:
-            image_hash = _compute_image_hash(all_images, all_captions, training_steps, learning_rate, lora_rank, vram_mode, output_name, noise_mode, use_folder_path=False)
+            image_hash = _compute_image_hash(
+                all_images, all_captions, training_steps, learning_rate,
+                lora_rank, vram_mode, output_name, noise_mode,
+                use_folder_path=False
+            )
 
-        # Check cache
-        if keep_lora and image_hash in _musubi_wan_lora_cache:
-            cached_path = _musubi_wan_lora_cache[image_hash]
-            if os.path.exists(cached_path):
-                print(f"[Musubi Wan] Cache hit! Reusing: {cached_path}")
-                return (cached_path,)
-            else:
-                del _musubi_wan_lora_cache[image_hash]
-                _save_musubi_wan_cache()
+        # S3 cache check (replaces local JSON cache)
+        if _check_s3_cache(image_hash):
+            # Download from S3 to temp file
+            cached_lora_path = _download_from_s3(image_hash)
+            print(f"[Musubi Wan] Using cached LoRA from S3: {image_hash}")
 
-        # Generate run name with timestamp
+            # Cleanup zip extraction dir if used
+            if use_zip and zip_extract_dir:
+                shutil.rmtree(zip_extract_dir, ignore_errors=True)
+
+            return (cached_lora_path,)
+
+        # Generate run name with timestamp (for logging only - not used in S3 key)
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         noise_suffix = {"High Noise": "high", "Low Noise": "low", "Combo": "combo"}.get(noise_mode, "low")
         run_name = f"{output_name}_{noise_suffix}_{timestamp}" if output_name else f"wan_lora_{noise_suffix}_{image_hash}"
 
-        # Output folder
-        output_folder = os.path.join(musubi_path, "output")
-        os.makedirs(output_folder, exist_ok=True)
-        lora_output_path = os.path.join(output_folder, f"{run_name}.safetensors")
-
-        # Auto-increment if file somehow still exists (same second)
-        if os.path.exists(lora_output_path):
-            counter = 1
-            while os.path.exists(os.path.join(output_folder, f"{run_name}_{counter}.safetensors")):
-                counter += 1
-            run_name = f"{run_name}_{counter}"
-            lora_output_path = os.path.join(output_folder, f"{run_name}.safetensors")
-            print(f"[Musubi Wan] Name exists, using: {run_name}")
+        # CHANGED: Output to temp directory (not permanent musubi output folder)
+        # We'll upload to S3 after training, then delete local file
+        training_temp_dir = tempfile.mkdtemp(prefix="comfy_musubi_wan_training_")
+        lora_output_path = os.path.join(training_temp_dir, f"{run_name}.safetensors")
 
         # Create temp directory for images
         temp_dir = tempfile.mkdtemp(prefix="comfy_musubi_wan_")
@@ -623,7 +881,7 @@ class MusubiWanLoraTrainer:
                 f"--max_train_steps={training_steps}",
                 "--max_data_loader_n_workers=2",
                 "--persistent_data_loader_workers",
-                f"--output_dir={output_folder}",
+                f"--output_dir={training_temp_dir}",
                 f"--output_name={run_name}",
                 "--seed=42",
             ]
@@ -670,27 +928,31 @@ class MusubiWanLoraTrainer:
             # Find the trained LoRA
             if not os.path.exists(lora_output_path):
                 # Check for alternative naming
-                possible_files = [f for f in os.listdir(output_folder) if f.startswith(run_name) and f.endswith('.safetensors')]
+                possible_files = [f for f in os.listdir(training_temp_dir) if f.endswith('.safetensors')]
                 if possible_files:
-                    lora_output_path = os.path.join(output_folder, possible_files[-1])
+                    lora_output_path = os.path.join(training_temp_dir, possible_files[-1])
                 else:
-                    raise FileNotFoundError(f"No LoRA file found in {output_folder}")
+                    raise FileNotFoundError(f"No LoRA file found in {training_temp_dir}")
 
             print(f"[Musubi Wan] Found trained LoRA: {lora_output_path}")
 
-            # Handle caching
-            if keep_lora:
-                _musubi_wan_lora_cache[image_hash] = lora_output_path
-                _save_musubi_wan_cache()
-                print(f"[Musubi Wan] LoRA saved and cached at: {lora_output_path}")
-            else:
-                print(f"[Musubi Wan] LoRA available at: {lora_output_path}")
+            # Upload to S3 (CRITICAL - fail if upload fails)
+            _upload_to_s3(lora_output_path, image_hash)
 
-            return (lora_output_path,)
+            # Download from S3 to get final path (for consistency)
+            # This ensures the returned path is always from S3, not local training output
+            final_lora_path = _download_from_s3(image_hash)
+
+            print(f"[Musubi Wan] LoRA cached in S3 with hash: {image_hash}")
+
+            return (final_lora_path,)
 
         finally:
-            # Cleanup temp directory
+            # Cleanup ALL temp directories
             try:
-                shutil.rmtree(temp_dir)
+                shutil.rmtree(temp_dir, ignore_errors=True)
+                shutil.rmtree(training_temp_dir, ignore_errors=True)
+                if use_zip and zip_extract_dir:
+                    shutil.rmtree(zip_extract_dir, ignore_errors=True)
             except Exception as e:
-                print(f"[Musubi Wan] Warning: Could not clean up temp dir: {e}")
+                print(f"[Musubi Wan] Warning: Could not clean up temp dirs: {e}")

@@ -1,3 +1,2 @@
-# No additional requirements
-# This node uses only standard ComfyUI dependencies (torch, PIL, numpy)
-# Training is handled by external tools (AI-Toolkit, sd-scripts) in their own venvs
+boto3>=1.35.0
+requests>=2.31.0
