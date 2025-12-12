@@ -75,6 +75,17 @@ def _initialize_s3():
     endpoint_url = os.environ.get('BUCKET_ENDPOINT_URL')
     bucket_name = os.environ.get('BUCKET_NAME')
 
+    # Extract bucket name from endpoint URL if not provided separately
+    if not bucket_name and endpoint_url:
+        # For URLs like https://bucket-name.s3.region.backblazeb2.com
+        # Extract bucket-name from the hostname
+        from urllib.parse import urlparse
+        parsed = urlparse(endpoint_url)
+        hostname = parsed.hostname
+        if hostname and '.s3.' in hostname:
+            bucket_name = hostname.split('.s3.')[0]
+            print(f"[Musubi Wan S3] Extracted bucket name from endpoint: {bucket_name}")
+
     missing = []
     if not access_key:
         missing.append('BUCKET_ACCESS_KEY_ID')
@@ -83,11 +94,11 @@ def _initialize_s3():
     if not endpoint_url:
         missing.append('BUCKET_ENDPOINT_URL')
     if not bucket_name:
-        missing.append('BUCKET_NAME')
+        missing.append('BUCKET_NAME (or include bucket name in BUCKET_ENDPOINT_URL)')
 
     if missing:
         raise ValueError(
-            f"Missing required S3 credentials in .env file: {', '.join(missing)}"
+            f"Missing required S3 credentials: {', '.join(missing)}"
         )
 
     # Initialize boto3 S3 client
