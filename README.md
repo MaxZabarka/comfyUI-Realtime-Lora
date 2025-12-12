@@ -155,6 +155,16 @@ These defaults are starting points for experimentation, not ideal values. Every 
 - If your LoRA looks overcooked or the subject bleeds into everything, lower the learning rate
 - If your LoRA is too weak after 400-500 steps, try more steps before raising the learning rate, its already high in the example workflows.
 
+
+## Support
+
+If this tool saves you time or fits into your workflow, consider [buying me a coffee](https://buymeacoffee.com/lorasandlenses).
+
+I'm currently between contracts due to family circumstances, which has given me time to build and maintain this project. Your support helps me keep developing it.
+
+No perks, no tiers - just a way to say thanks if you find it useful.
+
+
 ## Credits
 
 This project is a usbility wrapper that calls these excellent training tools:
@@ -176,13 +186,3 @@ Feedback is welcome - open an issue or reach out.
 ## License
 
 MIT
-
----
-
-## Support
-
-If this tool saves you time or fits into your workflow, consider [buying me a coffee](https://buymeacoffee.com/lorasandlenses).
-
-I'm currently between contracts due to family circumstances, which has given me time to build and maintain this project. Your support helps me keep developing it.
-
-No perks, no tiers - just a way to say thanks if you find it useful.
