@@ -75,16 +75,28 @@ def _initialize_s3():
     endpoint_url = os.environ.get('BUCKET_ENDPOINT_URL')
     bucket_name = os.environ.get('BUCKET_NAME')
 
-    # Extract bucket name from endpoint URL if not provided separately
-    if not bucket_name and endpoint_url:
-        # For URLs like https://bucket-name.s3.region.backblazeb2.com
-        # Extract bucket-name from the hostname
+    # Extract bucket name from endpoint URL and normalize to regional format
+    # Boto3 needs regional endpoint (https://s3.region.domain), not bucket-specific (https://bucket.s3.region.domain)
+    if endpoint_url:
         from urllib.parse import urlparse
         parsed = urlparse(endpoint_url)
         hostname = parsed.hostname
+
         if hostname and '.s3.' in hostname:
-            bucket_name = hostname.split('.s3.')[0]
-            print(f"[Musubi Wan S3] Extracted bucket name from endpoint: {bucket_name}")
+            parts = hostname.split('.s3.')
+            if len(parts) == 2:
+                # First part is the bucket name, second part is region.domain
+                potential_bucket = parts[0]
+                region_domain = parts[1]
+
+                # Only extract bucket if not already set
+                if not bucket_name:
+                    bucket_name = potential_bucket
+                    print(f"[Musubi Wan S3] Extracted bucket name from endpoint: {bucket_name}")
+
+                # Normalize endpoint to regional format (without bucket name)
+                endpoint_url = f"{parsed.scheme}://s3.{region_domain}"
+                print(f"[Musubi Wan S3] Normalized endpoint to regional format: {endpoint_url}")
 
     missing = []
     if not access_key:
