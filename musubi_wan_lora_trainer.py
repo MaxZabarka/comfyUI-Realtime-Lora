@@ -526,6 +526,20 @@ class MusubiWanLoraTrainer:
                     "default": saved.get('output_name', "MyWanLora"),
                     "tooltip": "Custom name for the output LoRA. Timestamp will be appended."
                 }),
+                "num_repeats": ("INT", {
+                    "default": saved.get('num_repeats', 10),
+                    "min": 1,
+                    "max": 100,
+                    "step": 1,
+                    "tooltip": "Number of times each image is repeated per epoch. Higher = fewer epochs for same step count. Default is 10."
+                }),
+                "batch_size": ("INT", {
+                    "default": saved.get('batch_size', 1),
+                    "min": 1,
+                    "max": 16,
+                    "step": 1,
+                    "tooltip": "Number of images to process per training step. Higher = faster training but more VRAM. Default is 1."
+                }),
             },
             "optional": {
                 "image_1": ("IMAGE", {"tooltip": "Training image (not needed if images_path is set)."}),
@@ -564,6 +578,8 @@ class MusubiWanLoraTrainer:
         blocks_to_swap,
         keep_lora=True,
         output_name="MyWanLora",
+        num_repeats=10,
+        batch_size=1,
         image_1=None,
         **kwargs
     ):
@@ -701,6 +717,8 @@ class MusubiWanLoraTrainer:
             'blocks_to_swap': blocks_to_swap,
             'keep_lora': keep_lora,
             'output_name': output_name,
+            'num_repeats': num_repeats,
+            'batch_size': batch_size,
         }
         _save_musubi_wan_config()
 
@@ -783,8 +801,9 @@ class MusubiWanLoraTrainer:
             config_content = generate_dataset_config(
                 image_folder=image_folder,
                 resolution=preset['resolution'],
-                batch_size=preset['batch_size'],
+                batch_size=batch_size,
                 enable_bucket=True,
+                num_repeats=num_repeats,
             )
 
             config_path = os.path.join(temp_dir, "dataset_config.toml")
