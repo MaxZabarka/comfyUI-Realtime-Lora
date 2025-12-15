@@ -540,6 +540,17 @@ class MusubiWanLoraTrainer:
                     "step": 1,
                     "tooltip": "Number of images to process per training step. Higher = faster training but more VRAM. Default is 1."
                 }),
+                "discrete_flow_shift": ("FLOAT", {
+                    "default": saved.get('discrete_flow_shift', 3.0),
+                    "min": 0.0,
+                    "max": 10.0,
+                    "step": 0.1,
+                    "tooltip": "Discrete flow shift parameter for Wan 2.2 training. Controls the noise schedule. Default is 3.0."
+                }),
+                "timestep_sampling": (["shift", "uniform", "sigmoid", "leading", "trailing"], {
+                    "default": saved.get('timestep_sampling', "shift"),
+                    "tooltip": "Timestep sampling method. 'shift' is recommended for Wan 2.2. Default is shift."
+                }),
             },
             "optional": {
                 "image_1": ("IMAGE", {"tooltip": "Training image (not needed if images_path is set)."}),
@@ -580,6 +591,8 @@ class MusubiWanLoraTrainer:
         output_name="MyWanLora",
         num_repeats=10,
         batch_size=1,
+        discrete_flow_shift=3.0,
+        timestep_sampling="shift",
         image_1=None,
         **kwargs
     ):
@@ -719,6 +732,8 @@ class MusubiWanLoraTrainer:
             'output_name': output_name,
             'num_repeats': num_repeats,
             'batch_size': batch_size,
+            'discrete_flow_shift': discrete_flow_shift,
+            'timestep_sampling': timestep_sampling,
         }
         _save_musubi_wan_config()
 
@@ -911,8 +926,8 @@ class MusubiWanLoraTrainer:
                 f"--dataset_config={config_path}",
                 "--sdpa",
                 f"--mixed_precision={preset['mixed_precision']}",
-                "--timestep_sampling=shift",
-                "--discrete_flow_shift=3.0",
+                f"--timestep_sampling={timestep_sampling}",
+                f"--discrete_flow_shift={discrete_flow_shift}",
                 f"--min_timestep={min_timestep}",
                 f"--max_timestep={max_timestep}",
                 f"--optimizer_type={preset['optimizer']}",
